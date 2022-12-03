@@ -19,6 +19,8 @@ private:
     vector <string> passwords; //all the passwords of the existing accounts
     vector <string> id_;
 public:
+    bool loggedIn = false;
+
     void SignUp(sf::RenderWindow& window, sf::Font& font, string username, string password) {
         //TODO: Randomly Generate ID
 
@@ -39,31 +41,30 @@ public:
         
         while (!validCredentials) {
 
-            ////Accepts upper case/ lower case/ underscores / numbers. 6-16 characters
-            //regex usernameRequirement("^[A-Za-z0-9_]{6,16}+$");
-            //bool  validUsername = regex_search(username,usernameRequirement);
-            ////Minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter,
-            //// one number and one special character
-            //regex passwordRequirement("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$");
-            //bool  validPassword = regex_search(password,passwordRequirement);
-            //if (!validUsername) {
+            ////Accepts upper case/ lower case / underscores / numbers. 6-16 characters
+            regex usernameRequirement("^[A-Za-z0-9_]{6,16}+$");
+            bool  validUsername = regex_search(username,usernameRequirement);
+            //Minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter,
+            // one number and one special character
+            regex passwordRequirement("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$");
+            bool  validPassword = regex_search(password,passwordRequirement);
+            if (!validUsername) {
 
-            //    window.draw(errorBox);
-            //    errorMessage.setString("Username does not meet the minimum requirements.\n Please try again using the proper username specifications");
-            //    window.draw(errorMessage);
-            //}
-            //if (!validPassword) {
+                window.draw(errorBox);
+                errorMessage.setString("Username does not meet the minimum requirements.\n Please try again using the proper username specifications");
+                window.draw(errorMessage);
+            }
+            if (!validPassword) {
 
-            //    window.draw(errorBox);
-            //    errorMessage.setString("Password does not meet the minimum requirements.\n Please try again using the proper password specifications");
-            //    window.draw(errorMessage);
-            //}
-
+                window.draw(errorBox);
+                errorMessage.setString("Password does not meet the minimum requirements.\n Please try again using the proper password specifications");
+                window.draw(errorMessage);
+            }
+            if (validUsername && validPassword) {
                 validCredentials = true;
                 insert_username(username);
                 insert_password(password);
-                //insert_id(id);
-            
+            }
         }
 
         //TODO: After Creating account. Need to take in profile details such as name.
@@ -79,34 +80,23 @@ public:
     }
 
 
-    void LoginIn() {
+    void LoginIn(sf::RenderWindow& window, string username, string password) {
         //The username and the password that the user entered
-        string username, password, id;
 
         //See if the user is loggedin or not
-        bool loggedIn = false;
 
         //create_vectors();
 
-        cout << "\nSign in. Use your BWOB account:\n" << endl;
-
         while (!loggedIn) {
-            cout << "Username: " << endl;
-            cin >> username;
-            cout << "Password: " << endl;
-            cin >> password;
-            cout << "ID: " << endl;
-            cin >> id;
+          
             int size = accounts_number(); //the number of the accounts
 
             //searches for an account that has the username, that the user entered
             for (int i = 0; i < size; ++i) {
                 if (username == usernames[i]) {
                     if (password == passwords[i]) {
-                        if (id == id_[i]) {
-                            cout << "Welcome, " + username;
-                            loggedIn = true;
-                        }
+                        loggedIn = true;
+                        cout << "Welcome, " << username << endl; 
                     }
                 }
             }
